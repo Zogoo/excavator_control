@@ -27,4 +27,4 @@ attached to the Pi to see the camera stream.
 
 4. Connect your camera to Raspberry pi 4 board.
 5. Test with camera with `python3 detect_picamera.py`
-6. <Working on how to detect distances and catch the object with bucket>
+6. *Working on how to detect distances and catch the object with bucket*

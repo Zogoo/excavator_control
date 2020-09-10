@@ -86,6 +86,7 @@ def detect_objects(interpreter, image, threshold):
             results.append(result)
     return results
 
+
 def annotate_objects(annotator, results, labels):
     """Draws the bounding box and label for each object in the results."""
     for obj in results:
@@ -101,6 +102,7 @@ def annotate_objects(annotator, results, labels):
         annotator.bounding_box([xmin, ymin, xmax, ymax])
         annotator.text([xmin, ymin],
                        '%s\n%.2f' % (labels[obj['class_id']], obj['score']))
+
 
 def detect_simple_objects():
     labels = load_labels('./trained_model/object/coco_labels.txt')
@@ -123,47 +125,47 @@ def print_objects(results, labels):
     result_str = ""
     for obj in results:
         ymin, xmin, ymax, xmax = obj['bounding_box']
+        xmin = int(xmin * CAMERA_WIDTH)
+        xmax = int(xmax * CAMERA_WIDTH)
+        ymin = int(ymin * CAMERA_HEIGHT)
+        ymax = int(ymax * CAMERA_HEIGHT)
         result_str += "X: " + str(xmin) + ", Y: " + str(ymin) + ", Object: " + \
             labels[obj['class_id']] + ", Percent: " + str(obj['score']) + "\n"
-    print(result_str, end="\r")
-    result_str = ""
+        print(result_str)
+    # result_str = ""
+
 
 def main():
     obj_shape, obj_labels, obj_interpreter = detect_simple_objects()
     bucket_shape, bucket_labels, bucket_interpreter = detect_bucket()
 
     with picamera.PiCamera(
-        resolution=(CAMERA_WIDTH, CAMERA_HEIGHT), framerate=30) as camera:
+            resolution=(CAMERA_WIDTH, CAMERA_HEIGHT), framerate=30) as camera:
         camera.start_preview()
         try:
             stream = io.BytesIO()
             annotator = Annotator(camera)
             for _ in camera.capture_continuous(
-                stream, format='jpeg', use_video_port=True):
+                    stream, format='jpeg', use_video_port=True):
                 stream.seek(0)
-                # Annotate simple objects
-                image = Image.open(stream).convert('RGB').resize(
-                    (obj_shape[1], obj_shape[2]), Image.ANTIALIAS
-                )
+                image = Image.open(stream).convert('RGB')
                 start_time = time.monotonic()
-                results = detect_objects(obj_interpreter, image, 0.4)
-                elapsed_ms = (time.monotonic() - start_time) * 1000
-
-                annotator.clear()
-                annotate_objects(annotator, results, obj_labels)
-                print_objects(results, obj_labels)
-                annotator.text([5, 0], '%.1fms' % (elapsed_ms))
-                annotator.update()
-                # Annotate bucket
-                image = Image.open(stream).convert('RGB').resize(
+                bucket_image = image.resize(
                     (bucket_shape[1], bucket_shape[2]), Image.ANTIALIAS)
-                start_time = time.monotonic()
-                results = detect_objects(bucket_interpreter, image, 0.4)
+                bucket_result = detect_objects(
+                    bucket_interpreter, bucket_image, 0.4)
+                obj_image = image.resize(
+                    (obj_shape[1], obj_shape[2]), Image.ANTIALIAS)
+                obj_result = detect_objects(obj_interpreter, obj_image, 0.4)
                 elapsed_ms = (time.monotonic() - start_time) * 1000
 
                 annotator.clear()
-                annotate_objects(annotator, results, bucket_labels)
-                print_objects(results, bucket_labels)
+                # annotate_objects(annotator, bucket_result, bucket_labels)
+                # annotate_objects(annotator, obj_result, obj_labels)
+                # Annotate bucket
+                print_objects(bucket_result, bucket_labels)
+                # Annotate simple objects
+                print_objects(obj_result, obj_labels)
                 annotator.text([5, 0], '%.1fms' % (elapsed_ms))
                 annotator.update()
 

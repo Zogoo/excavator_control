@@ -168,7 +168,7 @@ def detect_bucket_distance(results, labels):
             obj = {}
             obj['height'] = xmax - xmin
             obj['width'] = ymax - ymin
-            # When pixel metric 2.1 lenght will 155mm
+            # When pixel metric 2.1 distance will 155mm
             obj['focal_distance'] = (
                 (obj['width'] * 155) / 55 + obj['height'] * 155 / 80) / 2
             print("Focal distance: " +

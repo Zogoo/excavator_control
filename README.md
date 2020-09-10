@@ -22,7 +22,7 @@ attached to the Pi to see the camera stream.
 1. Connect Ardiuno motor shield to Raspberry Pi 4 as following schema.
   ![Schema](schema.png)
 2. Connect your Excavator motors with Ardiuno motor shield motor like above schema.
-3. Test with `python3 test_motor_connection.py`
+3. Test with `python3 test_motors.py`
    If everything get connected your motors will move one by one.
 
 4. Connect your camera to Raspberry pi 4 board.

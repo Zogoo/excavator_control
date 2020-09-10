@@ -3,7 +3,7 @@
 export DATA_DIR='./trained_model/object'
 
 # Install required packages
-python3 -m pip install -r requirements.txt
+python3 -m pip install -r required_libs.txt
 
 # Get TF Lite model and labels
 curl -O http://storage.googleapis.com/download.tensorflow.org/models/tflite/coco_ssd_mobilenet_v1_1.0_quant_2018_06_29.zip

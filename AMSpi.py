@@ -82,7 +82,18 @@ class AMSpi:
         try:
             if self._test_shift_pins():
                 self._shift_write(0)
-                self.stop_dc_motors([self.DC_Motor_1, self.DC_Motor_2, self.DC_Motor_3, self.DC_Motor_4])
+                self.stop_dc_motors(
+                    [self.DC_Motor_1, self.DC_Motor_2, self.DC_Motor_3, self.DC_Motor_4])
+            GPIO.cleanup()
+        except RuntimeWarning:
+            return True
+
+    def clean_up(self):
+        try:
+            if self._test_shift_pins():
+                self._shift_write(0)
+                self.stop_dc_motors(
+                    [self.DC_Motor_1, self.DC_Motor_2, self.DC_Motor_3, self.DC_Motor_4])
             GPIO.cleanup()
         except RuntimeWarning:
             return True
@@ -203,7 +214,8 @@ class AMSpi:
         Example: {AMSpi.DC_Motor_1: 50, AMSpi.DC_Motor_2: 50, AMSpi.DC_Motor_3: 50, AMSpi.DC_Motor_4: 50}
         :raise: AssertionError
         """
-        assert all([True if x in self._MOTORS.keys() else False for x in motors_freq.keys()]), "Unknown Motor was set."
+        assert all([True if x in self._MOTORS.keys(
+        ) else False for x in motors_freq.keys()]), "Unknown Motor was set."
 
         for motor in motors_freq.keys():
             self._MOTORS[motor][self._PWM_FREQUENCY_] = motors_freq[motor]
@@ -239,10 +251,12 @@ class AMSpi:
         :rtype: bool
         """
         if self._MOTORS[dc_motor][self._PIN_] is None:
-            print("WARNING: Pin for DC_Motor_{} is not set. Can not run motor.".format(dc_motor))
+            print(
+                "WARNING: Pin for DC_Motor_{} is not set. Can not run motor.".format(dc_motor))
             return False
 
-        all_motors_direction, direction_value = self._get_motors_direction(dc_motor, int(not clockwise))
+        all_motors_direction, direction_value = self._get_motors_direction(
+            dc_motor, int(not clockwise))
 
         # set motors direction
         self._shift_write(all_motors_direction)
@@ -262,10 +276,12 @@ class AMSpi:
                 self._MOTORS[dc_motor][self._PWM_] = GPIO.PWM(self._MOTORS[dc_motor][self._PIN_],
                                                               self._MOTORS[dc_motor][self._PWM_FREQUENCY_])
                 # noinspection PyUnresolvedReferences
-                self._MOTORS[dc_motor][self._PWM_].start(self._MOTORS[dc_motor][self._PWM_DUTY_CYCLE_])
+                self._MOTORS[dc_motor][self._PWM_].start(
+                    self._MOTORS[dc_motor][self._PWM_DUTY_CYCLE_])
             else:
                 # noinspection PyUnresolvedReferences
-                self._MOTORS[dc_motor][self._PWM_].ChangeDutyCycle(self._MOTORS[dc_motor][self._PWM_DUTY_CYCLE_])
+                self._MOTORS[dc_motor][self._PWM_].ChangeDutyCycle(
+                    self._MOTORS[dc_motor][self._PWM_DUTY_CYCLE_])
         else:
             print("WARNING: Speed argument must be in range 0-100! But %s given. "
                   "Keeping previous setting (%s)." % (speed, self._MOTORS[dc_motor][self._PWM_DUTY_CYCLE_]))
@@ -300,7 +316,8 @@ class AMSpi:
             # print("WARNING: Pin for DC_Motor_{} is not set. Stopping motor could not be done".format(dc_motor))
             return False
 
-        all_motors_direction, direction_value = self._get_motors_direction(dc_motor, self._stop)
+        all_motors_direction, direction_value = self._get_motors_direction(
+            dc_motor, self._stop)
         # set motors direction
         self._shift_write(all_motors_direction)
 

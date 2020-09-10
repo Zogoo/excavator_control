@@ -129,10 +129,52 @@ def print_objects(results, labels):
         xmax = int(xmax * CAMERA_WIDTH)
         ymin = int(ymin * CAMERA_HEIGHT)
         ymax = int(ymax * CAMERA_HEIGHT)
-        result_str += "X: " + str(xmin) + ", Y: " + str(ymin) + ", Object: " + \
-            labels[obj['class_id']] + ", Percent: " + str(obj['score']) + "\n"
-        print(result_str)
-    # result_str = ""
+        result_str += "X-min: " + str(xmin) + ", Y-min: " + str(ymin) + \
+            ", X-max: " + str(xmax) + ", Y-max: " + str(ymax) + \
+            ", Object: " + labels[obj['class_id']] + \
+            ", Percent: " + str(obj['score']) + "\n"
+    print(result_str)
+
+
+def detect_bucket_size(results, labels):
+    sizes = []
+    for obj in results:
+        ymin, xmin, ymax, xmax = obj['bounding_box']
+        xmin = int(xmin * CAMERA_WIDTH)
+        xmax = int(xmax * CAMERA_WIDTH)
+        ymin = int(ymin * CAMERA_HEIGHT)
+        ymax = int(ymax * CAMERA_HEIGHT)
+        if labels[obj['class_id']] == 'bucket':
+            obj = {}
+            obj['height'] = xmax - xmin
+            obj['width'] = ymax - ymin
+            # 55mm width, 80mm height
+            obj['pixel_metric'] = (obj['width'] / 55 + obj['height'] / 80) / 2
+            print("Pixel metrics: " +
+                  str(round(obj['pixel_metric'], 1)) + "\n")
+            sizes.append(obj)
+    return sizes
+
+
+def detect_bucket_distance(results, labels):
+    distances = []
+    for obj in results:
+        ymin, xmin, ymax, xmax = obj['bounding_box']
+        xmin = int(xmin * CAMERA_WIDTH)
+        xmax = int(xmax * CAMERA_WIDTH)
+        ymin = int(ymin * CAMERA_HEIGHT)
+        ymax = int(ymax * CAMERA_HEIGHT)
+        if labels[obj['class_id']] == 'bucket':
+            obj = {}
+            obj['height'] = xmax - xmin
+            obj['width'] = ymax - ymin
+            # When pixel metric 2.1 lenght will 155mm
+            obj['focal_distance'] = (
+                (obj['width'] * 155) / 55 + obj['height'] * 155 / 80) / 2
+            print("Focal distance: " +
+                  str(round(obj['focal_distance'], 1)) + "\n")
+            distances.append(obj)
+    return distances
 
 
 def main():
@@ -160,12 +202,15 @@ def main():
                 elapsed_ms = (time.monotonic() - start_time) * 1000
 
                 annotator.clear()
+                # Detect size
+                detect_bucket_size(bucket_result, bucket_labels)
+                detect_bucket_distance(bucket_result, bucket_labels)
                 # annotate_objects(annotator, bucket_result, bucket_labels)
                 # annotate_objects(annotator, obj_result, obj_labels)
                 # Annotate bucket
                 print_objects(bucket_result, bucket_labels)
                 # Annotate simple objects
-                print_objects(obj_result, obj_labels)
+                # print_objects(obj_result, obj_labels)
                 annotator.text([5, 0], '%.1fms' % (elapsed_ms))
                 annotator.update()
 

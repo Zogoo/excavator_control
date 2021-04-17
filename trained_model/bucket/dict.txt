@@ -1,4 +1,0 @@
-background
-bucket
-backet_neck
-bucket_tooth

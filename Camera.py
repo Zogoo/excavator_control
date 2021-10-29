@@ -175,7 +175,7 @@ class Camera:
                 ", Percent: " + str(obj['score']) + "\n"
         print(result_str)
 
-    def execute_command(self, ):
+    def execute_command(self):
         with self.camera:
             try:
                 stream = io.BytesIO()

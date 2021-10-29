@@ -63,6 +63,7 @@ class Camera:
             interpreter = Interpreter(model['model_path'])
             interpreter.allocate_tensors()
             self.interpreters.append({
+                'name': model['name'],
                 'shape': interpreter.get_input_details()[0]['shape'],
                 'labels': self.load_labels(model['label_path']),
                 'interpreter': interpreter,
@@ -194,8 +195,10 @@ class Camera:
                         # Annotate object in view
                         # self.annotate_objects(annotator, result, interpreter['labels'])
                         # Detect size and distance TODO: improve with contanstant object
-                        size = self.detect_size(result, interpreter['labels'])
-                        distance = self.detect_distance(result, interpreter['labels'])
+                        size = self.detect_size(
+                            result, interpreter['labels'], interpreter['name'])
+                        distance = self.detect_distance(
+                            result, interpreter['labels'], interpreter['name'])
                         if bool(interpreter.get('function')):
                             interpreter['function'](result, interpreter['labels'], size, distance)
 

@@ -6,11 +6,13 @@ from Camera import Camera
 def main():
     tl_models = [
         {
+            'name': 'shovel',
             'model_path': './trained_model/shovel_model/model.tflite',
             'label_path': './trained_model/shovel_model/model-dict.txt',
             'function': None
         },
         {
+            'name': 'apple',
             'model_path': './trained_model/object/detect.tflite',
             'label_path': './trained_model/object/coco_labels.txt',
             'function': None

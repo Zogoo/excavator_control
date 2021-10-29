@@ -113,9 +113,9 @@ def detect_simple_objects():
     return interpreter.get_input_details()[0]['shape'], labels, interpreter
 
 
-def detect_showel():
-    labels = load_labels('./trained_model/showel/dict.txt')
-    interpreter = Interpreter('./trained_model/showel/model.tflite')
+def detect_shovel():
+    labels = load_labels('./trained_model/shovel_model/model-dict.txt')
+    interpreter = Interpreter('./trained_model/shovel_model/model.tflite')
     interpreter.allocate_tensors()
     return interpreter.get_input_details()[0]['shape'], labels, interpreter
 
@@ -136,7 +136,7 @@ def print_objects(results, labels):
     print(result_str)
 
 
-def detect_showel_size(results, labels):
+def detect_shovel_size(results, labels):
     sizes = []
     for obj in results:
         ymin, xmin, ymax, xmax = obj['bounding_box']
@@ -144,7 +144,7 @@ def detect_showel_size(results, labels):
         xmax = int(xmax * CAMERA_WIDTH)
         ymin = int(ymin * CAMERA_HEIGHT)
         ymax = int(ymax * CAMERA_HEIGHT)
-        if labels[obj['class_id']] == 'showel':
+        if labels[obj['class_id']] == 'shovel':
             obj = {}
             obj['height'] = xmax - xmin
             obj['width'] = ymax - ymin
@@ -156,7 +156,7 @@ def detect_showel_size(results, labels):
     return sizes
 
 
-def detect_showel_distance(results, labels):
+def detect_shovel_distance(results, labels):
     distances = []
     for obj in results:
         ymin, xmin, ymax, xmax = obj['bounding_box']
@@ -164,7 +164,7 @@ def detect_showel_distance(results, labels):
         xmax = int(xmax * CAMERA_WIDTH)
         ymin = int(ymin * CAMERA_HEIGHT)
         ymax = int(ymax * CAMERA_HEIGHT)
-        if labels[obj['class_id']] == 'showel':
+        if labels[obj['class_id']] == 'shovel':
             obj = {}
             obj['height'] = xmax - xmin
             obj['width'] = ymax - ymin
@@ -179,7 +179,7 @@ def detect_showel_distance(results, labels):
 
 def main():
     obj_shape, obj_labels, obj_interpreter = detect_simple_objects()
-    showel_shape, showel_labels, showel_interpreter = detect_showel()
+    shovel_shape, shovel_labels, shovel_interpreter = detect_shovel()
 
     with picamera.PiCamera(
             resolution=(CAMERA_WIDTH, CAMERA_HEIGHT), framerate=30) as camera:
@@ -192,10 +192,10 @@ def main():
                 stream.seek(0)
                 image = Image.open(stream).convert('RGB')
                 start_time = time.monotonic()
-                showel_image = image.resize(
-                    (showel_shape[1], showel_shape[2]), Image.ANTIALIAS)
-                showel_result = detect_objects(
-                    showel_interpreter, showel_image, 0.4)
+                shovel_image = image.resize(
+                    (shovel_shape[1], shovel_shape[2]), Image.ANTIALIAS)
+                shovel_result = detect_objects(
+                    shovel_interpreter, shovel_image, 0.4)
                 obj_image = image.resize(
                     (obj_shape[1], obj_shape[2]), Image.ANTIALIAS)
                 obj_result = detect_objects(obj_interpreter, obj_image, 0.4)
@@ -203,12 +203,12 @@ def main():
 
                 annotator.clear()
                 # Detect size
-                detect_showel_size(showel_result, showel_labels)
-                detect_showel_distance(showel_result, showel_labels)
-                # annotate_objects(annotator, showel_result, showel_labels)
+                detect_shovel_size(shovel_result, shovel_labels)
+                detect_shovel_distance(shovel_result, shovel_labels)
+                # annotate_objects(annotator, shovel_result, shovel_labels)
                 # annotate_objects(annotator, obj_result, obj_labels)
-                # Annotate showel
-                print_objects(showel_result, showel_labels)
+                # Annotate shovel
+                print_objects(shovel_result, shovel_labels)
                 # Annotate simple objects
                 # print_objects(obj_result, obj_labels)
                 annotator.text([5, 0], '%.1fms' % (elapsed_ms))

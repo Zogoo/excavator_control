@@ -1,7 +1,8 @@
 import numpy as np
 import tensorflow as tf
 # Load the TFLite model and allocate tensors.
-interpreter = tf.lite.Interpreter(model_path="trained_model/showel/model.tflite")
+interpreter = tf.lite.Interpreter(
+    model_path="trained_model/shovel_model/model.tflite")
 interpreter.allocate_tensors()
 
 # Get input and output tensors.

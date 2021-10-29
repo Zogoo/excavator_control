@@ -6,7 +6,7 @@ class Excavator:
     LEFT_CHAIN_MOTOR = AMSpi.DC_Motor_1
     RIGHT_CHAIN_MOTOR = AMSpi.DC_Motor_2
     BODY_MOTOR = AMSpi.DC_Motor_3
-    SHOWEL_MOTOR = AMSpi.DC_Motor_4
+    SHOVEL_MOTOR = AMSpi.DC_Motor_4
 
     def __init__(self):
         self.motors = AMSpi()
@@ -18,7 +18,7 @@ class Excavator:
         self.motors_memo = []
 
         self.body_angle = 0
-        self.showel_angle = 0
+        self.shovel_angle = 0
 
     def __enter__(self):
         return self
@@ -65,15 +65,15 @@ class Excavator:
         self.motors_memo.append(self.BODY_MOTOR)
         self.motors.run_dc_motor(self.BODY_MOTOR, clockwise=False, speed=speed)
 
-    def move_up_showel(self, speed=100):
-        self.motors_memo.append(self.SHOWEL_MOTOR)
-        self.motors.run_dc_motor(self.SHOWEL_MOTOR,
+    def move_up_shovel(self, speed=100):
+        self.motors_memo.append(self.SHOVEL_MOTOR)
+        self.motors.run_dc_motor(self.SHOVEL_MOTOR,
                                  clockwise=True,
                                  speed=speed)
 
-    def move_down_showel(self, speed=100):
-        self.motors_memo.append(self.SHOWEL_MOTOR)
-        self.motors.run_dc_motor(self.SHOWEL_MOTOR,
+    def move_down_shovel(self, speed=100):
+        self.motors_memo.append(self.SHOVEL_MOTOR)
+        self.motors.run_dc_motor(self.SHOVEL_MOTOR,
                                  clockwise=False,
                                  speed=speed)
 
@@ -88,7 +88,7 @@ class Excavator:
         self.execute(3)
         self.turn_right_body()
         self.execute(3)
-        self.move_down_showel()
+        self.move_down_shovel()
         self.execute(5)
-        self.move_up_showel()
+        self.move_up_shovel()
         self.execute(5)

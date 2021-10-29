@@ -45,7 +45,7 @@ class Camera:
         except RuntimeWarning:
             return True
 
-    def load_labels(path):
+    def load_labels(self, path):
         """Loads the labels file. Supports files with or without index numbers."""
         with open(path, 'r', encoding='utf-8') as f:
             lines = f.readlines()

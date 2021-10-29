@@ -10,7 +10,7 @@ import io
 import re
 import time
 
-from annotation import Annotator
+from Annotation import Annotator
 
 import numpy as np
 import picamera
@@ -189,7 +189,7 @@ class Camera:
 
                     for interpreter in self.interpreters:
                         image = image.resize((interpreter['shape'][1], interpreter['shape'][2]), Image.ANTIALIAS)
-                        result = self.detect_objects(interpreter['interpreter'], image, 0.4)
+                        result = self.detect_objects(interpreter['interpreter'], image, 0.5)
                         # Annotate objects in terminal
                         self.print_objects(result, interpreter['labels'])
                         # Annotate object in view

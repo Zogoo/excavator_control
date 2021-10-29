@@ -63,7 +63,7 @@ class Camera:
             interpreter = Interpreter(model['model_path'])
             interpreter.allocate_tensors()
             self.interpreters.append({
-                'shape': interpreter.get_input_details()[model['label_index']]['shape'],
+                'shape': interpreter.get_input_details()[0]['shape'],
                 'labels': self.load_labels(model['label_path']),
                 'interpreter': interpreter,
                 'function': model['function']

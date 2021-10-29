@@ -11,7 +11,7 @@ def main():
             'function': None
         },
         {
-            'model_path': '../trained_model/object/detect.tflite',
+            'model_path': './trained_model/object/detect.tflite',
             'label_path': './trained_model/object/coco_labels.txt',
             'function': None
         }

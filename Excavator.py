@@ -57,6 +57,14 @@ class Excavator:
                                  clockwise=False,
                                  speed=speed)
 
+    def move_forward(self, speed=100):
+        self.forward_left_chain(speed)
+        self.forward_right_chain(speed)
+
+    def move_backward(self, speed=100):
+        self.backward_left_chain(speed)
+        self.backward_right_chain(speed)
+
     def turn_left_body(self, speed=100):
         self.motors_memo.append(self.BODY_MOTOR)
         self.motors.run_dc_motor(self.BODY_MOTOR, clockwise=True, speed=speed)

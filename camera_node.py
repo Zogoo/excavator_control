@@ -110,5 +110,6 @@ tl_models = [
         'function': find_object
     }
 ]
+
 camera = Camera(tl_models)
 camera.execute_command()

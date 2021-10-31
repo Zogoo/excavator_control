@@ -4,7 +4,6 @@ import json
 import io
 import struct
 
-
 class Message:
     def __init__(self, selector, sock, addr, request):
         self.selector = selector

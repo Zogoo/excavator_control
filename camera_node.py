@@ -43,7 +43,7 @@ class CameraNode:
         sock.connect_ex(addr)
         return sock, addr
 
-    def send_instruction(self, addr, sock, request):
+    def send_instruction(self, sock, addr, request):
         events = selectors.EVENT_READ | selectors.EVENT_WRITE
         message = Message(self.sel, sock, addr, request)
         self.sel.register(sock, events, data=message)

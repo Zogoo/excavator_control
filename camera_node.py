@@ -21,7 +21,7 @@ class CameraNode:
         except RuntimeWarning:
             return True
 
-    def create_request(self, action, value, encode):
+    def create_request(self, action, value, encode="utf-8"):
         if encode == "bin":
             return dict(
                 type="binary/custom-client-binary-type",

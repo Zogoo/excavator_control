@@ -36,7 +36,7 @@ class CameraNode:
             )
 
     def start_connection(self):
-        addr = ('127.0.0.1', '65432')
+        addr = ('127.0.0.1', 65432)
         print("starting connection to", addr)
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.setblocking(False)

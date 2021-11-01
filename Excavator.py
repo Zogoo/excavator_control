@@ -86,8 +86,7 @@ class Excavator:
                                  speed=speed)
 
     def stop_all_motors(self):
-        for motor in [self.LEFT_CHAIN_MOTOR, self.RIGHT_CHAIN_MOTOR, self.BODY_MOTOR, self.SHOVEL_MOTOR]:
-            self.motors.stop_dc_motor(motor)
+        self.motors.stop_dc_motors([self.LEFT_CHAIN_MOTOR, self.RIGHT_CHAIN_MOTOR, self.BODY_MOTOR, self.SHOVEL_MOTOR])
         self.motors_memo = []
         time.sleep(1)
 

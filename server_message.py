@@ -85,7 +85,9 @@ class Message:
     def _create_response_json_content(self):
         action = self.request.get("action")
         query = self.request.get("value")
-        if bool(self.instructions.get(action)):
+        if action == "hello":
+            content = {"result": "hello camera"}
+        elif bool(self.instructions.get(action)):
             self.instructions.get(action)['cmd']()
             self.instructions.get(action)['fire'](int(query))
             content = {"result": action}

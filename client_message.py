@@ -9,9 +9,9 @@ class Message:
         self.selector = selector
         self.sock = sock
         self.addr = addr
-        self.request = request
         self._recv_buffer = b""
         self._send_buffer = b""
+        self.request = request
         self._request_queued = False
         self._jsonheader_len = None
         self.jsonheader = None
@@ -139,6 +139,10 @@ class Message:
         finally:
             # Delete reference to socket object for garbage collection
             self.sock = None
+
+    def set_request(self, request):
+        self.request = request
+        self._request_queued = False
 
     def queue_request(self):
         content = self.request["content"]

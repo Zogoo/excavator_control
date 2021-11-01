@@ -41,18 +41,24 @@ class CameraNode:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.setblocking(False)
         sock.connect_ex(addr)
+        events = selectors.EVENT_READ | selectors.EVENT_WRITE
+        handshake_req = dict(
+            type="text/json",
+            encoding="utf-8",
+            content=dict(action="hello", value="motor"),
+        )
+        message = Message(self.sel, sock, addr, handshake_req)
+        self.sel.register(sock, events, data=message)
         return sock, addr
 
-    def send_instruction(self, sock, addr, request):
-        events = selectors.EVENT_READ | selectors.EVENT_WRITE
-        message = Message(self.sel, sock, addr, request)
-        self.sel.register(sock, events, data=message)
+    def send_instruction(self, request):
         try:
             while True:
                 events = self.sel.select(timeout=1)
                 for key, mask in events:
                     message = key.data
                     try:
+                        message.set_request(request)
                         message.process_events(mask)
                     except Exception:
                         print(
@@ -70,7 +76,7 @@ class CameraNode:
 
 
 cnode = CameraNode()
-sock, addr = cnode.start_connection()
+cnode.start_connection()
 
 
 def find_object(results, labels, sizes, distances, obj_name):
@@ -85,19 +91,19 @@ def find_object(results, labels, sizes, distances, obj_name):
 
     while score < 0.5:
         request = cnode.create_request("left", "4")
-        cnode.send_instruction(sock, addr, request)
+        cnode.send_instruction(request)
         request = cnode.create_request("right", "4")
-        cnode.send_instruction(sock, addr, request)
+        cnode.send_instruction(request)
 
     request = cnode.create_request("stop", "all")
-    cnode.send_instruction(sock, addr, request)
+    cnode.send_instruction(request)
 
     while obj_dist > 100:
         request = cnode.create_request("forward", "1")
-        cnode.send_instruction(sock, addr, request)
+        cnode.send_instruction(request)
 
     request = cnode.create_request("stop", "all")
-    cnode.send_instruction(sock, addr, request)
+    cnode.send_instruction(request)
 
 tl_models = [
     {

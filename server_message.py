@@ -85,10 +85,9 @@ class Message:
     def _create_response_json_content(self):
         action = self.request.get("action")
         query = self.request.get("value")
-        if bool(self.instructions.get(query)):
-            self.instructions.get(query)['cmd']()
-            self.instructions.get(query)['fire'](
-                int(self.instructions.get(query)['period']))
+        if bool(self.instructions.get(action)):
+            self.instructions.get(action)['cmd']()
+            self.instructions.get(action)['fire'](int(query))
             content = {"result": action}
         else:
             content = {"result": f'Error: invalid action "{action}".'}

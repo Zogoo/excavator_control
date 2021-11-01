@@ -12,14 +12,15 @@ from Excavator import Excavator
 excavator = Excavator()
 
 instructions = {
-    "forward": {'cmd': excavator.move_forward, 'fire': excavator.execute, 'period': 1},
-    "backward": {'cmd': excavator.move_forward, 'fire': excavator.execute, 'period': 1},
-    "left": {'cmd': excavator.forward_left_chain, 'fire': excavator.execute, 'period': 1},
-    "right": {'cmd': excavator.forward_right_chain, 'fire': excavator.execute, 'period': 1},
-    "shovel-left": {'cmd': excavator.turn_left_body, 'fire': excavator.execute, 'period': 1},
-    "shovel-right": {'cmd': excavator.turn_right_body, 'fire': excavator.execute, 'period': 1},
-    "shovel-up": {'cmd': excavator.move_up_shovel, 'fire': excavator.execute, 'period': 1},
-    "shovel-down": {'cmd': excavator.move_down_shovel, 'fire': excavator.execute, 'period': 1},
+    "forward": {'cmd': excavator.move_forward, 'fire': excavator.execute},
+    "backward": {'cmd': excavator.move_forward, 'fire': excavator.execute},
+    "left": {'cmd': excavator.forward_left_chain, 'fire': excavator.execute},
+    "right": {'cmd': excavator.forward_right_chain, 'fire': excavator.execute},
+    "shovel-left": {'cmd': excavator.turn_left_body, 'fire': excavator.execute},
+    "shovel-right": {'cmd': excavator.turn_right_body, 'fire': excavator.execute},
+    "shovel-up": {'cmd': excavator.move_up_shovel, 'fire': excavator.execute},
+    "shovel-down": {'cmd': excavator.move_down_shovel, 'fire': excavator.execute},
+    "stop": { 'cmd': excavator.stop_all_motors }
 }
 
 class MotorNode:

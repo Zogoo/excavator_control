@@ -82,15 +82,17 @@ def find_object(obj_name, results, labels, sizes, distances):
     obj_size = next((size for size in sizes if size["name"] == obj_name), None)
     obj_dist = next((dist for dist in distances if dist["name"] == obj_name), None)
 
-    while score < 0.5:        
-        request = cnode.create_request("turn-left", "360")
+    while score < 0.5:
+        request = cnode.create_request("left", "4")
         cnode.send_instruction(sock, addr, request)
-    
+        request = cnode.create_request("right", "4")
+        cnode.send_instruction(sock, addr, request)
+
     request = cnode.create_request("stop", "all")
     cnode.send_instruction(sock, addr, request)
 
     while obj_dist > 100:
-        request = cnode.create_request("move-forward", "1")
+        request = cnode.create_request("forward", "1")
         cnode.send_instruction(sock, addr, request)
 
     request = cnode.create_request("stop", "all")

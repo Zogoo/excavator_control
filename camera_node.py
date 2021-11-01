@@ -72,7 +72,8 @@ class CameraNode:
 cnode = CameraNode()
 sock, addr = cnode.start_connection()
 
-def find_object(obj_name, results, labels, sizes, distances):
+
+def find_object(results, labels, sizes, distances, obj_name):
     score = 0
 
     for obj in results:

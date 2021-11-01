@@ -200,7 +200,7 @@ class Camera:
                         distances = self.detect_distances(results, interpreter['labels'])
                         if bool(interpreter.get('function')):
                             interpreter['function'](
-                                results, interpreter['labels'], sizes, distances)
+                                results, interpreter['labels'], sizes, distances, interpreter['name'])
 
                     elapsed_ms = (time.monotonic() - start_time) * 1000
 

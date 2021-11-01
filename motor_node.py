@@ -8,21 +8,6 @@ import traceback
 from server_message import Message
 from Excavator import Excavator
 
-
-excavator = Excavator()
-
-instructions = {
-    "forward": {'cmd': excavator.move_forward, 'fire': excavator.execute},
-    "backward": {'cmd': excavator.move_forward, 'fire': excavator.execute},
-    "left": {'cmd': excavator.forward_left_chain, 'fire': excavator.execute},
-    "right": {'cmd': excavator.forward_right_chain, 'fire': excavator.execute},
-    "shovel-left": {'cmd': excavator.turn_left_body, 'fire': excavator.execute},
-    "shovel-right": {'cmd': excavator.turn_right_body, 'fire': excavator.execute},
-    "shovel-up": {'cmd': excavator.move_up_shovel, 'fire': excavator.execute},
-    "shovel-down": {'cmd': excavator.move_down_shovel, 'fire': excavator.execute},
-    "stop": { 'cmd': excavator.stop_all_motors }
-}
-
 class MotorNode:
     def __init__(self) -> None:
         self.sel = selectors.DefaultSelector()
@@ -43,14 +28,14 @@ class MotorNode:
         message = Message(self.sel, conn, addr, instructions)
         self.sel.register(conn, selectors.EVENT_READ, data=message)
 
-        host = '127.0.0.1'
-        port = 65432
+    def init_listener(self):
+        addr = ('127.0.0.1', 65432)
         lsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # Avoid bind() exception: OSError: [Errno 48] Address already in use
         lsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        lsock.bind((host, port))
+        lsock.bind(addr)
         lsock.listen()
-        print("listening on", (host, port))
+        print("listening on", addr)
         lsock.setblocking(False)
         self.sel.register(lsock, selectors.EVENT_READ, data=None)
 
@@ -60,6 +45,7 @@ class MotorNode:
                 events = self.sel.select(timeout=None)
                 for key, mask in events:
                     if key.data is None:
+                        print("Accept wrapper is executed")
                         self.accept_wrapper(key.fileobj)
                     else:
                         message = key.data
@@ -77,4 +63,19 @@ class MotorNode:
             self.sel.close()
     
 
-MotorNode().follow_instructions()
+excavator = Excavator()
+instructions = {
+    "forward": {'cmd': excavator.move_forward, 'fire': excavator.execute},
+    "backward": {'cmd': excavator.move_forward, 'fire': excavator.execute},
+    "left": {'cmd': excavator.forward_left_chain, 'fire': excavator.execute},
+    "right": {'cmd': excavator.forward_right_chain, 'fire': excavator.execute},
+    "shovel-left": {'cmd': excavator.turn_left_body, 'fire': excavator.execute},
+    "shovel-right": {'cmd': excavator.turn_right_body, 'fire': excavator.execute},
+    "shovel-up": {'cmd': excavator.move_up_shovel, 'fire': excavator.execute},
+    "shovel-down": {'cmd': excavator.move_down_shovel, 'fire': excavator.execute},
+    "stop": {'cmd': excavator.stop_all_motors}
+}
+
+motor_node = MotorNode()
+motor_node.init_listener()
+motor_node.follow_instructions()

@@ -59,4 +59,5 @@ instructions = {
 }
 
 motor_node = MotorNode()
+motor_node.accept_socket()
 motor_node.listen_commands(instructions)

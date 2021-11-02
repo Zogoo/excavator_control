@@ -3,6 +3,7 @@
 from Excavator import Excavator
 import json
 import socket
+import io
 
 class MotorNode:
     HOST = "127.0.0.1"  # Standard loopback interface address (localhost)
@@ -11,6 +12,8 @@ class MotorNode:
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.bind((self.HOST, self.PORT))
         self.socket.listen()
+        self.conn, self.addr = self.socket.accept()
+        print("Connected by", self.addr)
 
     def __enter__(self):
         return self
@@ -26,9 +29,13 @@ class MotorNode:
         d = json.loads(jsn)
         return d
 
-    def accept_socket(self):
-        self.conn, self.addr = self.socket.accept()
-        print("Connected by", self.addr)
+    def _binary_to_dict(self, json_bytes):
+        tiow = io.TextIOWrapper(
+            io.BytesIO(json_bytes), encoding='utf-8', newline=""
+        )
+        obj = json.load(tiow)
+        tiow.close()
+        return obj
 
     def listen_commands(self, instructions):
         print("Waiting instructions")
@@ -61,5 +68,4 @@ instructions = {
 }
 
 motor_node = MotorNode()
-motor_node.accept_socket()
 motor_node.listen_commands(instructions)

@@ -20,16 +20,14 @@ class CameraNode:
         except RuntimeWarning:
             return True
 
-    def _dict_to_binary(self, dict):
-        str = json.dumps(dict)
-        binary = ' '.join(format(ord(letter), 'b') for letter in str)
-        return binary
+    def _dict_to_bytes(self, dict):
+        return json.dumps(dict, ensure_ascii=False).encode('utf-8')
 
     def connect_to_host(self):
         self.socket.connect((self.HOST, self.PORT))
 
     def send_command(self, data):
-        self.socket.sendall(self._dict_to_binary(data))
+        self.socket.sendall(self._dict_to_bytes(data))
         resp = self.socket.recv(1024)
         print("Received", repr(resp))
 

@@ -37,34 +37,34 @@ cnode.connect_to_host()
 def find_object(results, labels, sizes, distances, obj_name):
     score = 0
 
-    print("Result: ", repr(results), "Labels:", repr(labels))
+    # print("Result: ", repr(results), "Labels:", repr(labels))
 
     for obj in results:
-        print("OBJ: ", repr(obj))
+        print("Found object: ", labels[obj['class_id']])
         if labels[obj['class_id']] == obj_name:
             score = obj['score']
 
     obj_size = next((size['pixel_metric']
-                    for size in sizes if size["name"] == obj_name), None)
+                    for size in sizes if size["name"] == obj_name), 0)
     obj_dist = next((dist['focal_distance']
-                    for dist in distances if dist["name"] == obj_name), None)
+                    for dist in distances if dist["name"] == obj_name), 0)
 
-    print(obj_name, " is located far from", round(obj_dist), " and size is", round(obj_size))
+    print(obj_name, " is located far from", round(obj_dist, 1), " and size is", round(obj_size, 1))
 
-    # while score < 0.5:
-    #     print("Finding", obj_name, "that detected 50 % more percents: ", score)
-    #     # cnode.send_command({"action": "left", "value": "4"}) # Have some issue with left side gear
-    #     cnode.send_command({"action": "right", "value": "4"})
+    while score < 0.5:
+        print("Finding", obj_name, "that detected 50 % more percents: ", score)
+        # cnode.send_command({"action": "left", "value": "4"}) # Have some issue with left side gear
+        cnode.send_command({"action": "right", "value": "4"})
 
-    # print("Stopping all movements")
-    # cnode.send_command({"action": "stop", "value": "0"})
+    print("Stopping all movements")
+    cnode.send_command({"action": "stop", "value": "0"})
 
-    # while obj_dist > 200:
-    #     print("Trying to reach near as possible: ", obj_dist)
-    #     cnode.send_command({"action": "forward", "value": "1"})
+    while obj_dist > 200:
+        print("Trying to reach near as possible: ", obj_dist)
+        cnode.send_command({"action": "forward", "value": "1"})
 
-    # print("Stopping all movements")
-    # cnode.send_command({"action": "stop", "value": "0"})
+    print("Stopping all movements")
+    cnode.send_command({"action": "stop", "value": "0"})
 
 tl_models = [
     {
@@ -74,7 +74,7 @@ tl_models = [
         'function': None
     },
     {
-        'name': 'people',
+        'name': 'person',
         'model_path': './trained_model/object/detect.tflite',
         'label_path': './trained_model/object/coco_labels.txt',
         'function': find_object

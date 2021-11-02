@@ -77,6 +77,20 @@ class Excavator:
                                  clockwise=False,
                                  speed=speed)
 
+    def move_forward(self, speed=100):
+        self.forward_left_chain(speed)
+        self.forward_right_chain(speed)
+
+    def move_backward(self, speed=100):
+        self.backward_left_chain(speed)
+        self.backward_right_chain(speed)
+
+    def stop_all_motors(self):
+        self.motors.stop_dc_motors(
+            [self.LEFT_CHAIN_MOTOR, self.RIGHT_CHAIN_MOTOR, self.BODY_MOTOR, self.SHOVEL_MOTOR])
+        self.motors_memo = []
+        time.sleep(1)
+
     def test_move(self):
         self.forward_left_chain()
         self.forward_right_chain()

@@ -72,7 +72,7 @@ instructions = {
     "shovel-right": {'cmd': excavator.turn_right_body, 'exec': excavator.execute},
     "shovel-up": {'cmd': excavator.move_up_shovel, 'exec': excavator.execute},
     "shovel-down": {'cmd': excavator.move_down_shovel, 'exec': excavator.execute},
-    "stop": {'cmd': excavator.stop_all_motors}
+    "stop": {'cmd': excavator.stop_all_motors, 'exec': None}
 }
 
 motor_node = MotorNode()

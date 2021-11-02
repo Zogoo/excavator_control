@@ -36,24 +36,24 @@ cnode.connect_to_host()
 
 def find_object(results, labels, sizes, distances, obj_name):
     score = 0
-
+    obj_name_test = 'person'
     # print("Result: ", repr(results), "Labels:", repr(labels))
 
     for obj in results:
         print("Found object: ", labels[obj['class_id']])
-        if labels[obj['class_id']] == obj_name:
+        if labels[obj['class_id']] == obj_name_test:
             score = obj['score']
 
     obj_size = next((size['pixel_metric']
-                    for size in sizes if size["name"] == obj_name), 0)
+                    for size in sizes if size["name"] == obj_name_test), 0)
     obj_dist = next((dist['focal_distance']
-                    for dist in distances if dist["name"] == obj_name), 0)
+                    for dist in distances if dist["name"] == obj_name_test), 0)
 
-    print(obj_name, " is located far from ", round(obj_dist, 1), " and size is", round(obj_size, 1))
+    print(obj_name_test, " is located far from ", round(obj_dist, 1), " and size is", round(obj_size, 1))
     print("Score is ", score)
 
     if score < 0.5:
-        print("Finding", obj_name, "that detected 50 % more percents: ", score)
+        print("Finding", obj_name_test, "that detected 50 % more percents: ", score)
         # cnode.send_command({"action": "left", "value": "4"}) # Have some issue with left side gear
         cnode.send_command({"action": "right", "value": "4"})
     elif score > 0.5:

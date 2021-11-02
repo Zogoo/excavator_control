@@ -12,7 +12,7 @@ def main():
             'function': None
         },
         {
-            'name': 'apple',
+            'name': 'person',
             'model_path': './trained_model/object/detect.tflite',
             'label_path': './trained_model/object/coco_labels.txt',
             'function': None

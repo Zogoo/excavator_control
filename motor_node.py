@@ -65,7 +65,7 @@ class MotorNode:
 excavator = Excavator()
 instructions = {
     "forward": {'cmd': excavator.move_forward, 'exec': excavator.execute},
-    "backward": {'cmd': excavator.move_forward, 'exec': excavator.execute},
+    "backward": {'cmd': excavator.move_backward, 'exec': excavator.execute},
     "left": {'cmd': excavator.forward_left_chain, 'exec': excavator.execute},
     "right": {'cmd': excavator.forward_right_chain, 'exec': excavator.execute},
     "shovel-left": {'cmd': excavator.turn_left_body, 'exec': excavator.execute},

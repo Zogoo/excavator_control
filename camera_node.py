@@ -60,14 +60,14 @@ def find_object(results, labels, sizes, distances, obj_name):
         print("Stopping all movements")
         cnode.send_command({"action": "stop", "value": "0"})
 
-    if score > 0.5 and obj_dist > 300:
+    if score > 0.5 and obj_dist < 1150:
         print("Trying to reach near as possible: ", obj_dist)
         cnode.send_command({"action": "forward", "value": "1"})
-    elif score > 0.5 and obj_dist < 100:
+    elif score > 0.5 and obj_dist < 1150:
         print("Stopping all movements")
         cnode.send_command({"action": "stop", "value": "0"})
 
-    if score > 0.5 and obj_dist < 100 and obj_size > 5:
+    if score > 0.5 and obj_dist < 1150 and obj_size > 7:
         print("Try to catch with shovel")
         cnode.send_command({"action": "shovel-down", "value": "5"})
 

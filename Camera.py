@@ -121,7 +121,7 @@ class Camera:
             annotator.text([xmin, ymin],
                         '%s\n%.2f' % (labels[obj['class_id']], obj['score']))
 
-    def detect_size(self, results, labels, obj_label):
+    def detect_sizes(self, results, labels):
         sizes = []
         for obj in results:
             ymin, xmin, ymax, xmax = obj['bounding_box']
@@ -129,19 +129,19 @@ class Camera:
             xmax = int(xmax * self.CAMERA_WIDTH)
             ymin = int(ymin * self.CAMERA_HEIGHT)
             ymax = int(ymax * self.CAMERA_HEIGHT)
-            if labels[obj['class_id']] == obj_label:
-                obj = {}
-                obj['height'] = xmax - xmin
-                obj['width'] = ymax - ymin
-                # 55mm width, 80mm height
-                obj['pixel_metric'] = (obj['width'] / 55 + obj['height'] / 80) / 2
-                print("Pixel metrics: " +
-                    str(round(obj['pixel_metric'], 1)) + "\n")
-                sizes.append(obj)
+            size_obj = {}
+            size_obj['name'] = labels[obj['class_id']]
+            size_obj['height'] = xmax - xmin
+            size_obj['width'] = ymax - ymin
+            # 55mm width, 80mm height
+            size_obj['pixel_metric'] = (size_obj['width'] / 55 + size_obj['height'] / 80) / 2
+            print("Pixel metrics: " +
+                str(round(size_obj['pixel_metric'], 1)) + "\n")
+            sizes.append(size_obj)
         return sizes
 
 
-    def detect_distance(self, results, labels, obj_label):
+    def detect_distances(self, results, labels):
         distances = []
         for obj in results:
             ymin, xmin, ymax, xmax = obj['bounding_box']
@@ -149,16 +149,16 @@ class Camera:
             xmax = int(xmax * self.CAMERA_WIDTH)
             ymin = int(ymin * self.CAMERA_HEIGHT)
             ymax = int(ymax * self.CAMERA_HEIGHT)
-            if labels[obj['class_id']] == obj_label:
-                obj = {}
-                obj['height'] = xmax - xmin
-                obj['width'] = ymax - ymin
-                # When pixel metric 2.1 distance will 155mm
-                obj['focal_distance'] = (
-                    (obj['width'] * 155) / 55 + obj['height'] * 155 / 80) / 2
-                print("Focal distance: " +
-                    str(round(obj['focal_distance'], 1)) + "\n")
-                distances.append(obj)
+            dist_obj = {}
+            dist_obj['name'] = labels[obj['class_id']]
+            dist_obj['height'] = xmax - xmin
+            dist_obj['width'] = ymax - ymin
+            # When pixel metric 2.1 distance will 155mm
+            dist_obj['focal_distance'] = (
+                (dist_obj['width'] * 155) / 55 + dist_obj['height'] * 155 / 80) / 2
+            print("Focal distance: " +
+                str(round(dist_obj['focal_distance'], 1)) + "\n")
+            distances.append(dist_obj)
         return distances
 
     def print_objects(self, results, labels):
@@ -189,18 +189,18 @@ class Camera:
 
                     for interpreter in self.interpreters:
                         image = image.resize((interpreter['shape'][1], interpreter['shape'][2]), Image.ANTIALIAS)
-                        result = self.detect_objects(interpreter['interpreter'], image, 0.5)
+                        results = self.detect_objects(interpreter['interpreter'], image, 0.5)
                         # Annotate objects in terminal
-                        self.print_objects(result, interpreter['labels'])
+                        self.print_objects(results, interpreter['labels'])
                         # Annotate object in view
                         # self.annotate_objects(annotator, result, interpreter['labels'])
-                        # Detect size and distance TODO: improve with contanstant object
-                        size = self.detect_size(
-                            result, interpreter['labels'], interpreter['name'])
-                        distance = self.detect_distance(
-                            result, interpreter['labels'], interpreter['name'])
+                        # Detect size and distance
+                        # TODO: improve with physical object with 1cm length
+                        sizes = self.detect_sizes(results, interpreter['labels'])
+                        distances = self.detect_distances(results, interpreter['labels'])
                         if bool(interpreter.get('function')):
-                            interpreter['function'](result, interpreter['labels'], size, distance)
+                            interpreter['function'](
+                                results, interpreter['labels'], sizes, distances, interpreter['name'])
 
                     elapsed_ms = (time.monotonic() - start_time) * 1000
 

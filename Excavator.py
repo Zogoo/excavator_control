@@ -78,12 +78,12 @@ class Excavator:
                                  speed=speed)
 
     def move_forward(self, speed=100):
-        self.forward_left_chain()  # TODO: fix hardware issue
-        self.backward_right_chain(speed)
-
-    def move_backward(self, speed=100):
         self.backward_left_chain()  # TODO: fix hardware issue
         self.forward_right_chain(speed)
+
+    def move_backward(self, speed=100):
+        self.forward_left_chain()  # TODO: fix hardware issue
+        self.backward_right_chain(speed)
 
     def stop_all_motors(self):
         self.motors.stop_dc_motors(

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-from _typeshed import Self
 import sys
 import socket
 import selectors
@@ -76,7 +75,6 @@ class CameraNode:
 
 
 cnode = CameraNode()
-cnode.start_connection()
 
 
 def find_object(results, labels, sizes, distances, obj_name):

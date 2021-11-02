@@ -49,22 +49,27 @@ def find_object(results, labels, sizes, distances, obj_name):
     obj_dist = next((dist['focal_distance']
                     for dist in distances if dist["name"] == obj_name), 0)
 
-    print(obj_name, " is located far from", round(obj_dist, 1), " and size is", round(obj_size, 1))
+    print(obj_name, " is located far from ", round(obj_dist, 1), " and size is", round(obj_size, 1))
+    print("Score is ", score)
 
-    while score < 0.5:
+    if score < 0.5:
         print("Finding", obj_name, "that detected 50 % more percents: ", score)
         # cnode.send_command({"action": "left", "value": "4"}) # Have some issue with left side gear
         cnode.send_command({"action": "right", "value": "4"})
+    elif score > 0.5:
+        print("Stopping all movements")
+        cnode.send_command({"action": "stop", "value": "0"})
 
-    print("Stopping all movements")
-    cnode.send_command({"action": "stop", "value": "0"})
-
-    while obj_dist > 200:
+    if score > 0.5 and obj_dist > 300:
         print("Trying to reach near as possible: ", obj_dist)
         cnode.send_command({"action": "forward", "value": "1"})
+    elif score > 0.5 and obj_dist < 100:
+        print("Stopping all movements")
+        cnode.send_command({"action": "stop", "value": "0"})
 
-    print("Stopping all movements")
-    cnode.send_command({"action": "stop", "value": "0"})
+    if score > 0.5 and obj_dist < 100 and obj_size > 5:
+        print("Try to catch with shovel")
+        cnode.send_command({"action": "shovel-down", "value": "5"})
 
 tl_models = [
     {

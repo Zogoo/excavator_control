@@ -202,10 +202,8 @@ class Camera:
                         # self.annotate_objects(annotator, result, interpreter['labels'])
                         # Detect size and distance
                         # TODO: improve with physical object with 1cm length
-                        sizes = self.detect_sizes(
-                            results, interpreter['labels'])
-                        distances = self.detect_distances(
-                            results, interpreter['labels'])
+                        sizes = self.detect_sizes(results, interpreter['labels'])
+                        distances = self.detect_distances(results, interpreter['labels'])
                         if bool(interpreter.get('function')):
                             interpreter['function'](
                                 results, interpreter['labels'], sizes, distances, interpreter['name'])

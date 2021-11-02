@@ -61,7 +61,6 @@ class MotorNode:
         finally:
             self.socket.close()
 
-
 excavator = Excavator()
 instructions = {
     "forward": {'cmd': excavator.move_forward, 'fire': excavator.execute},

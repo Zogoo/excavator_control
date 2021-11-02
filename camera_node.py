@@ -41,15 +41,14 @@ def find_object(results, labels, sizes, distances, obj_name):
             score = obj['score']
 
     obj_size = next((size for size in sizes if size["name"] == obj_name), None)
-    obj_dist = next(
-        (dist for dist in distances if dist["name"] == obj_name), None)
+    obj_dist = next((dist for dist in distances if dist["name"] == obj_name), None)
+
     print(obj_name, " is located far from", obj_dist, " and size is", obj_size)
 
     while score < 0.5:
-        print("Finding object that detected 50% more percents: ", score)
-        cnode.send_command({"action": "left", "value": "4"})
+        print("Finding", obj_name, "that detected 50 % more percents: ", score)
+        # cnode.send_command({"action": "left", "value": "4"}) # Have some issue with left side gear
         cnode.send_command({"action": "right", "value": "4"})
-
 
     print("Stopping all movements")
     cnode.send_command({"action": "stop", "value": "0"})
@@ -62,7 +61,6 @@ def find_object(results, labels, sizes, distances, obj_name):
     cnode.send_command({"action": "stop", "value": "0"})
 
     cnode.__exit__()
-
 
 tl_models = [
     {
@@ -79,5 +77,5 @@ tl_models = [
     }
 ]
 
-camera = Camera(tl_models, False)
+camera = Camera(tl_models)
 camera.execute_command()

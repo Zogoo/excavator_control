@@ -20,7 +20,7 @@ class CameraNode:
         except RuntimeWarning:
             return True
 
-    def _dict_to_binary(dict):
+    def _dict_to_binary(self, dict):
         str = json.dumps(dict)
         binary = ' '.join(format(ord(letter), 'b') for letter in str)
         return binary

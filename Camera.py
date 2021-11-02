@@ -23,7 +23,7 @@ class Camera:
     CAMERA_WIDTH = 640
     CAMERA_HEIGHT = 480
 
-    def __init__(self, models):
+    def __init__(self, models, exportLog=True):
         """
         Load camera with fine resolution
         """
@@ -32,6 +32,7 @@ class Camera:
         self.camera.resolution = (self.CAMERA_WIDTH, self.CAMERA_HEIGHT)
         self.camera.framerate = 30
         self.camera.start_preview()
+        self.exportLog = exportLog
         # Camera warm-up time
         sleep(2)
         self.load_models(models)
@@ -136,8 +137,9 @@ class Camera:
             # 55mm width, 80mm height
             size_obj['pixel_metric'] = (
                 size_obj['width'] / 55 + size_obj['height'] / 80) / 2
-            print("Pixel metrics: " +
-                  str(round(size_obj['pixel_metric'], 1)) + "\n")
+            if self.exportLog:
+                print("Pixel metrics: " +
+                    str(round(size_obj['pixel_metric'], 1)) + "\n")
             sizes.append(size_obj)
         return sizes
 
@@ -156,8 +158,9 @@ class Camera:
             # When pixel metric 2.1 distance will 155mm
             dist_obj['focal_distance'] = (
                 (dist_obj['width'] * 155) / 55 + dist_obj['height'] * 155 / 80) / 2
-            print("Focal distance: " +
-                  str(round(dist_obj['focal_distance'], 1)) + "\n")
+            if self.exportLog:
+                print("Focal distance: " +
+                    str(round(dist_obj['focal_distance'], 1)) + "\n")
             distances.append(dist_obj)
         return distances
 
@@ -193,7 +196,8 @@ class Camera:
                         results = self.detect_objects(
                             interpreter['interpreter'], image, 0.5)
                         # Annotate objects in terminal
-                        self.print_objects(results, interpreter['labels'])
+                        if self.exportLog:
+                            self.print_objects(results, interpreter['labels'])
                         # Annotate object in view
                         # self.annotate_objects(annotator, result, interpreter['labels'])
                         # Detect size and distance

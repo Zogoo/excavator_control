@@ -31,6 +31,7 @@ class MotorNode:
         print("Connected by", self.addr)
 
     def listen_commands(self, instructions):
+        print("Waiting instructions")
         while True:
             self.data = self.conn.recv(1024)
             if not self.data:
@@ -38,6 +39,7 @@ class MotorNode:
             dict_data = self._binary_to_dict(self.data)        
             action = dict_data.get("action")
             query = dict_data.get("value")
+            print("Got instruction from client and going to execute it: ", action)
             instructions.get(action)['cmd']()
             instructions.get(action)['fire'](int(query))
         

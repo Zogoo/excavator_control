@@ -28,7 +28,7 @@ class CameraNode:
     def connect_to_host(self):
         self.socket.connect((self.HOST, self.PORT))
 
-    def send_request(self, data):
+    def send_command(self, data):
         self.socket.sendall(self._dict_to_binary(data))
         resp = self.socket.recv(1024)
         print("Received", repr(resp))
@@ -44,17 +44,23 @@ def find_object(results, labels, sizes, distances, obj_name):
     obj_size = next((size for size in sizes if size["name"] == obj_name), None)
     obj_dist = next(
         (dist for dist in distances if dist["name"] == obj_name), None)
+    print(obj_name, " is located far from", obj_dist, " and size is", obj_size)
 
     while score < 0.5:
-        cnode.send_request({"action": "left", "value": "4"})
-        cnode.send_request({"action": "right", "value": "4"})
+        print("Finding object that detected 50% more percents: ", score)
+        cnode.send_command({"action": "left", "value": "4"})
+        cnode.send_command({"action": "right", "value": "4"})
 
-    cnode.send_request({"action": "stop", "value": "0"})
+
+    print("Stopping all movements")
+    cnode.send_command({"action": "stop", "value": "0"})
 
     while obj_dist > 200:
-        cnode.send_request({"action": "forward", "value": "1"})
+        print("Trying to reach near as possible: ", obj_dist)
+        cnode.send_command({"action": "forward", "value": "1"})
 
-    cnode.send_request({"action": "stop", "value": "0"})
+    print("Stopping all movements")
+    cnode.send_command({"action": "stop", "value": "0"})
 
     cnode.__exit__()
 
@@ -67,12 +73,12 @@ tl_models = [
         'function': None
     },
     {
-        'name': 'apple',
+        'name': 'people',
         'model_path': './trained_model/object/detect.tflite',
         'label_path': './trained_model/object/coco_labels.txt',
         'function': find_object
     }
 ]
 
-camera = Camera(tl_models)
+camera = Camera(tl_models, False)
 camera.execute_command()

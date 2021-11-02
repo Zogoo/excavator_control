@@ -53,8 +53,8 @@ class MotorNode:
                     query = dict_data.get("value")
                     print("Got instruction from client and going to execute it: ", action)
                     instructions.get(action)['cmd']()
-                    if bool(instructions.get(action)['fire']):
-                        instructions.get(action)['fire'](int(query))
+                    if bool(instructions.get(action)['exec']):
+                        instructions.get(action)['exec'](int(query))
                     conn.sendall(b"ok")
 
         except KeyboardInterrupt:
@@ -64,14 +64,14 @@ class MotorNode:
 
 excavator = Excavator()
 instructions = {
-    "forward": {'cmd': excavator.move_forward, 'fire': excavator.execute},
-    "backward": {'cmd': excavator.move_forward, 'fire': excavator.execute},
-    "left": {'cmd': excavator.forward_left_chain, 'fire': excavator.execute},
-    "right": {'cmd': excavator.forward_right_chain, 'fire': excavator.execute},
-    "shovel-left": {'cmd': excavator.turn_left_body, 'fire': excavator.execute},
-    "shovel-right": {'cmd': excavator.turn_right_body, 'fire': excavator.execute},
-    "shovel-up": {'cmd': excavator.move_up_shovel, 'fire': excavator.execute},
-    "shovel-down": {'cmd': excavator.move_down_shovel, 'fire': excavator.execute},
+    "forward": {'cmd': excavator.move_forward, 'exec': excavator.execute},
+    "backward": {'cmd': excavator.move_forward, 'exec': excavator.execute},
+    "left": {'cmd': excavator.forward_left_chain, 'exec': excavator.execute},
+    "right": {'cmd': excavator.forward_right_chain, 'exec': excavator.execute},
+    "shovel-left": {'cmd': excavator.turn_left_body, 'exec': excavator.execute},
+    "shovel-right": {'cmd': excavator.turn_right_body, 'exec': excavator.execute},
+    "shovel-up": {'cmd': excavator.move_up_shovel, 'exec': excavator.execute},
+    "shovel-down": {'cmd': excavator.move_down_shovel, 'exec': excavator.execute},
     "stop": {'cmd': excavator.stop_all_motors}
 }
 

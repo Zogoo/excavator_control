@@ -35,18 +35,18 @@ class CameraNode:
                 content=dict(action=action, value=value),
             )
 
-    def start_connection(self, request):
-        addr = ('127.0.0.1', 65432)
-        print("starting connection to", addr)
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.setblocking(False)
-        sock.connect_ex(addr)
-        events = selectors.EVENT_READ | selectors.EVENT_WRITE
-        message = Message(self.sel, sock, addr, request)
-        self.sel.register(sock, events, data=message)
-        return sock, addr
+    def start_connection(self):
+        self.addr = ('127.0.0.1', 65432)
+        print("starting connection to", self.addr)
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.setblocking(False)
+        self.sock.connect_ex(self.addr)
 
     def send_instruction(self):
+        events = selectors.EVENT_READ | selectors.EVENT_WRITE
+        message = Message(self.sel, self.sock, self.addr)
+        self.sel.register(self.sock, events, data=message)
+
         try:
             while True:
                 events = self.sel.select(timeout=1)
@@ -73,11 +73,8 @@ class CameraNode:
         self.start_connection(request)
         self.send_instruction()
 
-
-cnode = CameraNode()
-
-
 def find_object(results, labels, sizes, distances, obj_name):
+    cnode = CameraNode()
     score = 0
 
     for obj in results:

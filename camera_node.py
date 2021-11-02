@@ -42,9 +42,9 @@ class CameraNode:
         self.sock.setblocking(False)
         self.sock.connect_ex(self.addr)
 
-    def send_instruction(self):
+    def send_instruction(self, request):
         events = selectors.EVENT_READ | selectors.EVENT_WRITE
-        message = Message(self.sel, self.sock, self.addr)
+        message = Message(self.sel, self.sock, self.addr, request)
         self.sel.register(self.sock, events, data=message)
 
         try:
@@ -70,8 +70,8 @@ class CameraNode:
 
     def send_request(self, action, value):
         request = self.create_request(action, value)
-        self.start_connection(request)
-        self.send_instruction()
+        self.start_connection()
+        self.send_instruction(request)
 
 def find_object(results, labels, sizes, distances, obj_name):
     cnode = CameraNode()

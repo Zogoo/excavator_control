@@ -15,8 +15,6 @@ class MotorNode:
         print("Start to listen")
         self.socket.listen()
         print("Accepting socket")
-        self.conn, self.addr = self.socket.accept()
-        print("Connected by", self.addr)
 
     def __enter__(self):
         return self
@@ -43,18 +41,21 @@ class MotorNode:
     def listen_commands(self, instructions):
         print("Waiting instructions")
         try:
-            while True:
-                self.data = self.conn.recv(1024)
-                if not self.data:
-                    break
-                dict_data = self._binary_to_dict(self.data)        
-                action = dict_data.get("action")
-                query = dict_data.get("value")
-                print("Got instruction from client and going to execute it: ", action)
-                instructions.get(action)['cmd']()
-                instructions.get(action)['fire'](int(query))
-            
-                self.conn.sendall(b"ok")
+            conn, addr = self.socket.accept()
+            print("Connected by", addr)
+            with conn:
+                while True:
+                    self.data = conn.recv(1024)
+                    if not self.data:
+                        break
+                    dict_data = self._binary_to_dict(self.data)        
+                    action = dict_data.get("action")
+                    query = dict_data.get("value")
+                    print("Got instruction from client and going to execute it: ", action)
+                    instructions.get(action)['cmd']()
+                    instructions.get(action)['fire'](int(query))
+                    conn.sendall(b"ok")
+
         except KeyboardInterrupt:
             print("caught keyboard interrupt, exiting")
         finally:

@@ -33,6 +33,7 @@ class CameraNode:
 
 def find_object(results, labels, sizes, distances, obj_name):
     cnode = CameraNode()
+    cnode.connect_to_host()
     score = 0
 
     for obj in results:

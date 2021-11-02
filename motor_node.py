@@ -53,7 +53,8 @@ class MotorNode:
                     query = dict_data.get("value")
                     print("Got instruction from client and going to execute it: ", action)
                     instructions.get(action)['cmd']()
-                    instructions.get(action)['fire'](int(query))
+                    if bool(instructions.get(action)['fire']):
+                        instructions.get(action)['fire'](int(query))
                     conn.sendall(b"ok")
 
         except KeyboardInterrupt:

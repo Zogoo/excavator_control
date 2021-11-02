@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from _typeshed import Self
 import sys
 import socket
 import selectors
@@ -35,30 +36,24 @@ class CameraNode:
                 content=dict(action=action, value=value),
             )
 
-    def start_connection(self):
+    def start_connection(self, request):
         addr = ('127.0.0.1', 65432)
         print("starting connection to", addr)
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.setblocking(False)
         sock.connect_ex(addr)
         events = selectors.EVENT_READ | selectors.EVENT_WRITE
-        handshake_req = dict(
-            type="text/json",
-            encoding="utf-8",
-            content=dict(action="hello", value="motor"),
-        )
-        message = Message(self.sel, sock, addr, handshake_req)
+        message = Message(self.sel, sock, addr, request)
         self.sel.register(sock, events, data=message)
         return sock, addr
 
-    def send_instruction(self, request):
+    def send_instruction(self):
         try:
             while True:
                 events = self.sel.select(timeout=1)
                 for key, mask in events:
                     message = key.data
                     try:
-                        message.set_request(request)
                         message.process_events(mask)
                     except Exception:
                         print(
@@ -73,6 +68,11 @@ class CameraNode:
             print("caught keyboard interrupt, exiting")
         finally:
             self.sel.close()
+
+    def send_request(self, action, value):
+        request = self.create_request(action, value)
+        self.start_connection(request)
+        self.send_instruction()
 
 
 cnode = CameraNode()
@@ -90,20 +90,15 @@ def find_object(results, labels, sizes, distances, obj_name):
     obj_dist = next((dist for dist in distances if dist["name"] == obj_name), None)
 
     while score < 0.5:
-        request = cnode.create_request("left", "4")
-        cnode.send_instruction(request)
-        request = cnode.create_request("right", "4")
-        cnode.send_instruction(request)
+        cnode.send_request("left", "4")
+        cnode.send_request("right", "4")
 
-    request = cnode.create_request("stop", "all")
-    cnode.send_instruction(request)
+    cnode.send_request("stop", "all")
 
     while obj_dist > 100:
-        request = cnode.create_request("forward", "1")
-        cnode.send_instruction(request)
+        cnode.send_request("forward", "1")
 
-    request = cnode.create_request("stop", "all")
-    cnode.send_instruction(request)
+    cnode.send_request("stop", "all")
 
 tl_models = [
     {
